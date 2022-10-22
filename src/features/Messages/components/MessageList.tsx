@@ -1,28 +1,19 @@
+import SendIcon from "@mui/icons-material/Send";
 import {
-  Button,
-  IconButton,
-  TextField,
-  Box,
   Avatar,
+  Box,
   Grid,
+  IconButton,
   LinearProgress,
+  TextField,
   Typography,
 } from "@mui/material";
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useAppDispatch, useAppSelector } from "../../../hooks/hooks";
 import { sendMessage } from "../MessagesSlice";
-import SendIcon from "@mui/icons-material/Send";
 
-interface MessageListProps {}
-
-export const MessageList = ({}: MessageListProps) => {
+export const MessageList = () => {
   const activeUserChat = useAppSelector((state) => state.users.activeUserChat);
   const activeUserId = useAppSelector((state) => state.users.activeUserId);
   const messages = useAppSelector((state) => state.messages.messages);

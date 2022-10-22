@@ -1,12 +1,9 @@
 import { Button, TextField, Typography } from "@mui/material";
-import React from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { login } from "./loginSlice";
 
-interface LoginProps {}
-
-export const Login = ({}: LoginProps) => {
+export const Login = () => {
   const dispatch = useDispatch();
   const {
     register,

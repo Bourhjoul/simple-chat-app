@@ -2,9 +2,7 @@ import { Grid } from "@mui/material";
 import { MessageList } from "./components/MessageList";
 import { UsersList } from "./components/UsersList";
 
-interface MessagesProps {}
-
-export const Messages = ({}: MessagesProps) => {
+export const Messages = () => {
   return (
     <>
       <UsersList />

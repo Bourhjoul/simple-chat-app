@@ -1,12 +1,10 @@
-import { Avatar, Box, Grid } from "@mui/material";
-import React, { useMemo } from "react";
+import { Avatar, Grid } from "@mui/material";
+import { useMemo } from "react";
 import { useAppDispatch, useAppSelector } from "../../../hooks/hooks";
 import { stringAvatar } from "../../../utils/AvatarGenerators";
 import { updateActiveUserChat } from "../../Login/loginSlice";
 
-interface UsersListProps {}
-
-export const UsersList = ({}: UsersListProps) => {
+export const UsersList = () => {
   const dispatch = useAppDispatch();
 
   const rawUsers = localStorage.getItem("Users") || "";

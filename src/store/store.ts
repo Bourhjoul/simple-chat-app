@@ -1,23 +1,18 @@
+import { Action, configureStore, ThunkAction } from "@reduxjs/toolkit";
 import {
-  configureStore,
-  ThunkAction,
-  Action,
-  combineReducers,
-} from "@reduxjs/toolkit";
-import LoginReducer from "../features/Login/loginSlice";
-import MessagesReducer from "../features/Messages/MessagesSlice";
-import {
-  persistStore,
-  persistReducer,
   FLUSH,
-  REHYDRATE,
   PAUSE,
   PERSIST,
+  persistReducer,
+  persistStore,
   PURGE,
   REGISTER,
+  REHYDRATE,
 } from "redux-persist";
-import sessionStorage from "redux-persist/es/storage/session";
 import localStorage from "redux-persist/es/storage";
+import sessionStorage from "redux-persist/es/storage/session";
+import LoginReducer from "../features/Login/loginSlice";
+import MessagesReducer from "../features/Messages/MessagesSlice";
 import crossBrowserListener from "../utils/crossBrowserListener";
 
 const persistedLoginReducer = persistReducer(
