@@ -5,6 +5,8 @@ import {
   Box,
   Avatar,
   Grid,
+  LinearProgress,
+  Typography,
 } from "@mui/material";
 import React, {
   useCallback,
@@ -28,6 +30,8 @@ export const MessageList = ({}: MessageListProps) => {
   const messagesRef = useRef<HTMLDivElement | null>(null);
   const dispatch = useAppDispatch();
   const [currentMessages, setCurrentMessages] = useState<any[]>([]);
+  const [currentSize, setCurrentSize] = useState<number>(8);
+  const [loading, setLoading] = useState<boolean>(false);
   const {
     register,
     formState: { errors },
@@ -39,6 +43,10 @@ export const MessageList = ({}: MessageListProps) => {
     },
   });
 
+  const rawUsers = localStorage.getItem("Users") || "";
+
+  const users = useMemo(() => JSON.parse(rawUsers) || "", [rawUsers]);
+
   useEffect(() => {
     const newCurrentMessages = messages
       .filter(
@@ -47,9 +55,9 @@ export const MessageList = ({}: MessageListProps) => {
             msg.receiverId === activeUserChat) ||
           (msg.receiverId === activeUserId && msg.senderId === activeUserChat)
       )
-      .slice(0, 10);
+      .slice(currentSize, messages.length - 1);
     setCurrentMessages(newCurrentMessages);
-  }, [messages, activeUserChat, activeUserId]);
+  }, [messages, activeUserChat, activeUserId, currentSize]);
 
   const submitMessage = async (data: { message: string }) => {
     if (activeUserChat && activeUserId)
@@ -61,45 +69,73 @@ export const MessageList = ({}: MessageListProps) => {
         })
       );
     reset();
-    messagesRef.current?.scrollIntoView();
+    setTimeout(() => {
+      messagesRef.current?.scrollIntoView({
+        block: "end",
+        behavior: "smooth",
+      });
+    }, 100);
   };
 
-  //   const onScroll =async (e: React.UIEvent<HTMLDivElement, UIEvent>) => {
-  //     const element = e.currentTarget;
-  //     if (element.scrollTop === 0) {
-  // const newCurrentMessages = messages
-  //   .filter(
-  //     (msg) =>
-  //       (msg.senderId === activeUserId && msg.receiverId === activeUserChat) ||
-  //       (msg.receiverId === activeUserId && msg.senderId === activeUserChat)
-  //   )
-  //   .slice(0, 10);
-  //       await  setTimeout(() => {
-  //          setCurrentMessages();
-  //        }, 1000);
-  //     }
-  //   };
+  const onScroll = async (e: React.UIEvent<HTMLDivElement, UIEvent>) => {
+    const element = e.currentTarget;
+    if (element.scrollTop === 0) {
+      const newSize = currentSize - 4 < 0 ? 0 : currentSize - 4;
+      const newCurrentMessages = messages
+        .filter(
+          (msg) =>
+            (msg.senderId === activeUserId &&
+              msg.receiverId === activeUserChat) ||
+            (msg.receiverId === activeUserId && msg.senderId === activeUserChat)
+        )
+        .slice(newSize, messages.length - 1);
+      setLoading(true);
+      setTimeout(() => {
+        setCurrentMessages(newCurrentMessages);
+        setCurrentSize(newSize);
+        setLoading(false);
+      }, 1000);
+    }
+  };
   return activeUserChat ? (
     <>
-      <Box maxHeight="400px" onScroll={(e) => {}} overflow="auto">
+      <Box maxHeight="400px" onScroll={onScroll} overflow="auto" padding={1}>
+        {loading && <LinearProgress />}{" "}
+        {currentMessages.length <= 0 && (
+          <Typography marginTop={5}>
+            No Messages yet between you the person selected.
+          </Typography>
+        )}
         {currentMessages.map((msg) => (
           <Grid container alignItems="flex-end" gap={1}>
             {msg.senderId !== activeUserId && <Grid item component={Avatar} />}
             <Grid
-              item
-              sx={{
-                background:
-                  msg.senderId === activeUserId ? "#a51ab7" : "#8a8a8a",
-                color: "white",
-              }}
-              borderRadius={1.5}
-              width="fit-content"
-              padding={1.5}
-              marginLeft={msg.senderId === activeUserId ? "auto" : ""}
               marginTop={1.3}
+              item
+              marginLeft={msg.senderId === activeUserId ? "auto" : ""}
             >
-              {msg.text}
+              <Typography
+                fontSize="8px"
+                textAlign={msg.senderId === activeUserId ? "right" : "left"}
+              >
+                {msg.senderId === activeUserId
+                  ? "you"
+                  : users.find((user: any) => user.id === activeUserChat).name}
+              </Typography>
+              <Box
+                sx={{
+                  background:
+                    msg.senderId === activeUserId ? "#a51ab7" : "#8a8a8a",
+                  color: "white",
+                }}
+                borderRadius={1.5}
+                width="fit-content"
+                padding={1.5}
+              >
+                {msg.text}
+              </Box>
             </Grid>
+
             {msg.senderId === activeUserId && <Grid item component={Avatar} />}
           </Grid>
         ))}

@@ -1,5 +1,4 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { store } from "../../store/store";
 
 export interface UserState {
   activeUserId?: number;
@@ -34,8 +33,6 @@ export const loginSlice = createSlice({
       }
     },
     updateActiveUserChat: (state, action: PayloadAction<number>) => {
-      console.log(action.payload, state.activeUserChat);
-
       state.activeUserChat = action.payload;
     },
   },
