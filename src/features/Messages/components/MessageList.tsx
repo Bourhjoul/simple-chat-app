@@ -46,7 +46,9 @@ export const MessageList = () => {
             msg.receiverId === activeUserChat) ||
           (msg.receiverId === activeUserId && msg.senderId === activeUserChat)
       )
-      .slice(currentSize, messages.length - 1);
+      .reverse()
+      .slice(0, currentSize)
+      .reverse();
     setCurrentMessages(newCurrentMessages);
   }, [messages, activeUserChat, activeUserId, currentSize]);
 
@@ -71,7 +73,10 @@ export const MessageList = () => {
   const onScroll = async (e: React.UIEvent<HTMLDivElement, UIEvent>) => {
     const element = e.currentTarget;
     if (element.scrollTop === 0) {
-      const newSize = currentSize - 4 < 0 ? 0 : currentSize - 4;
+      const newSize =
+        currentSize + 4 > messages.length - 1
+          ? messages.length - 1
+          : currentSize + 4;
       const newCurrentMessages = messages
         .filter(
           (msg) =>
@@ -79,7 +84,9 @@ export const MessageList = () => {
               msg.receiverId === activeUserChat) ||
             (msg.receiverId === activeUserId && msg.senderId === activeUserChat)
         )
-        .slice(newSize, messages.length - 1);
+        .reverse()
+        .slice(0, currentSize)
+        .reverse();
       setLoading(true);
       setTimeout(() => {
         setCurrentMessages(newCurrentMessages);
