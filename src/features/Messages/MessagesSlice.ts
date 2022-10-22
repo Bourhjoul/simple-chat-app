@@ -2,7 +2,8 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface message {
   text: string;
-  id: number;
+  senderId: number;
+  receiverId: number;
 }
 
 export interface MessagesState {
@@ -23,8 +24,12 @@ export const messagesSlice = createSlice({
   name: "messages",
   initialState,
   reducers: {
-    sendMessage: (state, action: PayloadAction<messageToSend>) => {},
+    sendMessage: (state, action: PayloadAction<messageToSend>) => {
+      state.messages.push(action.payload);
+    },
   },
 });
 
 export const { sendMessage } = messagesSlice.actions;
+
+export default messagesSlice.reducer;

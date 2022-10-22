@@ -1,14 +1,19 @@
 import { Grid } from "@mui/material";
 import { MessageList } from "./components/MessageList";
+import { UsersList } from "./components/UsersList";
 
 interface MessagesProps {}
 
 export const Messages = ({}: MessagesProps) => {
   return (
-    <Grid container>
-      <Grid item>
-        <MessageList />
+    <>
+      <UsersList />
+
+      <Grid container>
+        <Grid item width="100%">
+          <MessageList />
+        </Grid>
       </Grid>
-    </Grid>
+    </>
   );
 };

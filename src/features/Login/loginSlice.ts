@@ -1,33 +1,46 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { store } from "../../store/store";
 
 export interface UserState {
   activeUserId?: number;
   activeUserName?: string;
-  users: {
-    name: string;
-    id: number;
-  }[];
+  activeUserChat?: number;
 }
 
-const initialState: UserState = {
-  users: [],
-};
+const initialState: UserState = {};
 
 export const loginSlice = createSlice({
-  name: "messages",
+  name: "login",
   initialState,
   reducers: {
     login: (state, action: PayloadAction<string>) => {
-      state.users.push({
-        id: state.users.length + 1,
-        name: action.payload,
-      });
-      state.activeUserId = state.users.length + 1;
+      const oldUsers = localStorage.getItem("Users")
+        ? JSON.parse(localStorage.getItem("Users") || "")
+        : [];
+
+      state.activeUserId = oldUsers.length + 1;
       state.activeUserName = action.payload;
+      if (oldUsers.length <= 0)
+        localStorage.setItem(
+          "Users",
+          JSON.stringify([{ name: action.payload, id: 1 }])
+        );
+      else {
+        const newUsers = [
+          ...oldUsers,
+          { name: action.payload, id: oldUsers.length + 1 },
+        ];
+        localStorage.setItem("Users", JSON.stringify(newUsers));
+      }
+    },
+    updateActiveUserChat: (state, action: PayloadAction<number>) => {
+      console.log(action.payload, state.activeUserChat);
+
+      state.activeUserChat = action.payload;
     },
   },
 });
 
-export const { login } = loginSlice.actions;
+export const { login, updateActiveUserChat } = loginSlice.actions;
 
 export default loginSlice.reducer;
